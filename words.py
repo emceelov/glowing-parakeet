@@ -1,24 +1,21 @@
 import requests
 import re
 import urllib.request   # MVP
+from datetime import date
 
-r = requests.get("https://www.merriam-webster.com/word-of-the-day/2023-02-18")
-
+r = requests.get("https://www.merriam-webster.com/word-of-the-day/" + str(date.today()))
 
 # print(r.headers)
-
 # print(r.text)
-
 # text = "<title>Word of the Day: Impromptu | Merriam-Webster</title>"
 
-html = urllib.request.urlopen("https://www.merriam-webster.com/word-of-the-day/2023-02-18").read()
+html = urllib.request.urlopen("https://www.merriam-webster.com/word-of-the-day/" + str(date.today())).read()
 # print(html)
 
 word = re.search(r"<title>Word of the Day: (.+?)(?: \|.+)$", str(html), re.IGNORECASE)
 
 # regex incorrect.
 definition = re.search(r"<h2>What It Means<\/h2>.+?(?:<\/em> )(.+?)(?:<\/p>.+)$", str(html), re.IGNORECASE)
-
 
 print(word.group(1))
 print(definition.group(1).replace("\\xe2\\x80\\x9c", "\"").replace("\\xe2\\x80\\x9d", "\"").replace("<em>", "").replace("</em>", ""))
