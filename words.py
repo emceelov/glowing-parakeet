@@ -29,8 +29,16 @@ def new_word():
     print(word.group(1))
     print(definition.group(1).replace("\\xe2\\x80\\x9c", "\"").replace("\\xe2\\x80\\x9d", "\"").replace("<em>", "").replace("</em>", ""))
 
-new_word()
+# new_word()
 
+def word_search():
+    word_query = input("Please enter a word: ")
+    html = urllib.request.urlopen("https://www.merriam-webster.com/dictionary/" + word_query).read()
+    definition = re.search(r"<meta property=\"og:description\" content=\"(.+?)(?:\\xe2\\x80\\xa6.+)$", str(html), re.IGNORECASE)
+    print(word_query.title())
+    print(definition.group(1) + ".")
+
+word_search()
 
 # https://mail.python.org/pipermail/tutor/2009-February/067414.html
 # https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
