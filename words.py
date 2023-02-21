@@ -21,6 +21,17 @@ print(word.group(1))
 print(definition.group(1).replace("\\xe2\\x80\\x9c", "\"").replace("\\xe2\\x80\\x9d", "\"").replace("<em>", "").replace("</em>", ""))
 
 
+def new_word():
+    wotd_date = input("Please enter a date in YYYY-MM-DD format: ")
+    html = urllib.request.urlopen("https://www.merriam-webster.com/word-of-the-day/" + wotd_date).read()
+    word = re.search(r"<title>Word of the Day: (.+?)(?: \|.+)$", str(html), re.IGNORECASE)
+    definition = re.search(r"<h2>What It Means<\/h2>.+?(?:<\/em> )(.+?)(?:<\/p>.+)$", str(html), re.IGNORECASE)
+    print(word.group(1))
+    print(definition.group(1).replace("\\xe2\\x80\\x9c", "\"").replace("\\xe2\\x80\\x9d", "\"").replace("<em>", "").replace("</em>", ""))
+
+new_word()
+
+
 # https://mail.python.org/pipermail/tutor/2009-February/067414.html
 # https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
 # replace unwanted chars in string s with " "
