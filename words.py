@@ -12,7 +12,7 @@ def main():
     print("\nWelcome to your easy-access dictionary!")
     while True:
         print("\nPress 1 for today's word\nPress 2 to search date\nPress 3 to search for a word\n"
-            "Type 4 to see your current dictionary\nType 'N' to exit\n")
+            "Press 4 to see your current dictionary\nType 'N' to exit\n")
         select = input()
         if select == "1": today_word()
         elif select == "2": new_word()
@@ -26,7 +26,7 @@ def today_word():
     word = re.search(r"<title>Word of the Day: (.+?)(?: \|.+)$", str(html), re.IGNORECASE)
     definition = re.search(r"<h2>What It Means<\/h2>.+?(?:<\/em> )(.+?)(?:<\/p>.+)$", str(html), re.IGNORECASE)
     clean_word = word.group(1)
-    clean_def = definition.group(1).replace("\\xe2\\x80\\x9c", "\"").replace("\\xe2\\x80\\x9d", "\"").replace("<em>", "").replace("</em>", "")
+    clean_def = definition.group(1).replace("\\xe2\\x80\\x9c", "\"").replace("\\xe2\\x80\\x9d", "\"").replace("\\xe2\\x80\\x99", "\'").replace("<em>", "").replace("</em>", "")
     print(clean_word)
     print(clean_def)
     add_dict(clean_word, clean_def)
@@ -66,10 +66,9 @@ def add_dict(word, definition):
 
 def read_dict():
     with open("words.csv", newline="") as file:
-        # get # of words in dictionary?
-        for row in file:
-            print(row)
-
+        for n, row in enumerate(file):
+            print(n+1, row)
+        print(f"You have {n+1} words in your dictionary. Great job!")
 
 if __name__ == "__main__":
     main()
