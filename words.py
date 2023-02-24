@@ -2,23 +2,28 @@ import requests
 import re
 import urllib.request   # MVP
 from datetime import date
+import sys
+import csv
 
 r = requests.get("https://www.merriam-webster.com/word-of-the-day/" + str(date.today()))
 
-# print(r.headers)
-# print(r.text)
-# text = "<title>Word of the Day: Impromptu | Merriam-Webster</title>"
+def main():
+    while True:
+        print("\nPress 1 for today's word\nPress 2 to search date\nPress 3 to search for a word\n"
+            "Type 'N' to exit\n")
+        select = input()
+        if select == "1": today_word()
+        elif select == "2": new_word()
+        elif select == "3": word_search()
+        elif select.lower() == "n": sys.exit("Thank you!")
 
-html = urllib.request.urlopen("https://www.merriam-webster.com/word-of-the-day/" + str(date.today())).read()
-# print(html)
 
-word = re.search(r"<title>Word of the Day: (.+?)(?: \|.+)$", str(html), re.IGNORECASE)
-
-# regex incorrect.
-definition = re.search(r"<h2>What It Means<\/h2>.+?(?:<\/em> )(.+?)(?:<\/p>.+)$", str(html), re.IGNORECASE)
-
-print(word.group(1))
-print(definition.group(1).replace("\\xe2\\x80\\x9c", "\"").replace("\\xe2\\x80\\x9d", "\"").replace("<em>", "").replace("</em>", ""))
+def today_word():
+    html = urllib.request.urlopen("https://www.merriam-webster.com/word-of-the-day/" + str(date.today())).read()
+    word = re.search(r"<title>Word of the Day: (.+?)(?: \|.+)$", str(html), re.IGNORECASE)
+    definition = re.search(r"<h2>What It Means<\/h2>.+?(?:<\/em> )(.+?)(?:<\/p>.+)$", str(html), re.IGNORECASE)
+    print(word.group(1))
+    print(definition.group(1).replace("\\xe2\\x80\\x9c", "\"").replace("\\xe2\\x80\\x9d", "\"").replace("<em>", "").replace("</em>", ""))
 
 
 def new_word():
@@ -27,37 +32,17 @@ def new_word():
     word = re.search(r"<title>Word of the Day: (.+?)(?: \|.+)$", str(html), re.IGNORECASE)
     definition = re.search(r"<h2>What It Means<\/h2>.+?(?:<\/em> )(.+?)(?:<\/p>.+)$", str(html), re.IGNORECASE)
     print(word.group(1))
-    print(definition.group(1).replace("\\xe2\\x80\\x9c", "\"").replace("\\xe2\\x80\\x9d", "\"").replace("<em>", "").replace("</em>", ""))
+    print(definition.group(1).replace("\\xe2\\x80\\x9c", "\"").replace("\\xe2\\x80\\x9d", "\"").replace("\\xe2\\x80\\x99", "\'").replace("<em>", "").replace("</em>", ""))
 
-# new_word()
 
 def word_search():
     word_query = input("Please enter a word: ")
     html = urllib.request.urlopen("https://www.merriam-webster.com/dictionary/" + word_query).read()
     definition = re.search(r"<meta property=\"og:description\" content=\"(.+?)(?:\\xe2\\x80\\xa6.+)$", str(html), re.IGNORECASE)
+    # definition = re.search(r"<meta property=\"og:description\" content=\"(.+?)(?: \:.+)$", str(html), re.IGNORECASE)
     print(word_query.title())
-    print(definition.group(1) + ".")
+    print(definition.group(1).replace("\\xe2\\x80\\x94", "- ") + ".")
 
-word_search()
 
-# https://mail.python.org/pipermail/tutor/2009-February/067414.html
-# https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/
-# replace unwanted chars in string s with " "
-
-# unwanted_char = '\x00\x01\x02\x03\x04\x05\x06\x07\x08\t\n\x0b\x0c\r\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f\x7f\x80\x81\x82\x83\x84\x85\x86\x87\x88\x89\x8a\x8b\x8c\x8d\x8e\x8f\x90\x91\x92\x93\x94\x95\x96\x97\x98\x99\x9a\x9b\x9c\x9d\x9e\x9f\xa0\xa1\xa2\xa3\xa4\xa5\xa6\xa7\xa8\xa9\xaa\xab\xac\xad\xae\xaf\xb0\xb1\xb2\xb3\xb4\xb5\xb6\xb7\xb8\xb9\xba\xbb\xbc\xbd\xbe\xbf\xc0\xc1\xc2\xc3\xc4\xc5\xc6\xc7\xc8\xc9\xca\xcb\xcc\xcd\xce\xcf\xd0\xd1\xd2\xd3\xd4\xd5\xd6\xd7\xd8\xd9\xda\xdb\xdc\xdd\xde\xdf\xe0\xe1\xe2\xe3\xe4\xe5\xe6\xe7\xe8\xe9\xea\xeb\xec\xed\xee\xef\xf0\xf1\xf2\xf3\xf4\xf5\xf6\xf7\xf8\xf9\xfa\xfb\xfc\xfd\xfe\xff'
-# text = "".join([(" " if n in unwanted_char else n) for n in definition.group(1) if n not in unwanted_char])
-# print(text)
-
-# x = (b"\xe2\x80\x9c".decode("utf-8"))
-# print(x)
-
-# # Encode to utf-8 to get byte string. Use bytestrings to replace.
-# y = definition.group(1).encode("utf-8")
-# z = y.replace(b"\\xe2\\x80\\x9c", b"")
-# print(y)
-
-# wop = "\\xe2\\x80\\x9cmade,"
-# print(wop.replace("\\xe2", ""))
-
-# wep = str(definition.group(1))
-# print(wep.replace("\\xe2\\x80\\x9c", "").replace("\\xe2\\x80\\x9d", ""))
+if __name__ == "__main__":
+    main()
